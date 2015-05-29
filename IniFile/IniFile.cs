@@ -33,28 +33,35 @@ namespace Ini
 
         public T Read<T>( string key, string section, T defaultValue )
         {
-            var retVal = new StringBuilder( 255 );
-            GetPrivateProfileString( section ?? Exe, key, "", retVal, 255, this.Path );
-            if ( string.IsNullOrEmpty( retVal.ToString() ) )
+            try
+            {
+                var retVal = new StringBuilder( 255 );
+                GetPrivateProfileString( section ?? Exe, key, "", retVal, 255, this.Path );
+                if ( string.IsNullOrEmpty( retVal.ToString() ) )
+                {
+                    return defaultValue;
+                }
+                string val = retVal.ToString();
+                if ( typeof( T ) == typeof( string ) )
+                {
+                    return (T)Convert.ChangeType( val, TypeCode.String );
+                }
+                if ( typeof( T ) == typeof( bool ) )
+                {
+                    return (T)Convert.ChangeType( val, TypeCode.Boolean );
+                }
+                if ( typeof( T ) == typeof( int ) )
+                {
+                    return (T)Convert.ChangeType( val, TypeCode.Int32 );
+                }
+                if ( typeof( T ) == typeof( double ) )
+                {
+                    return (T)Convert.ChangeType( val, TypeCode.Double );
+                }
+            }
+            catch
             {
                 return defaultValue;
-            }
-            string val = retVal.ToString();
-            if ( typeof( T ) == typeof( string ) )
-            {
-                return (T)Convert.ChangeType( val, TypeCode.String );
-            }
-            if ( typeof( T ) == typeof( bool ) )
-            {
-                return (T)Convert.ChangeType( val, TypeCode.Boolean );
-            }
-            if ( typeof( T ) == typeof( int ) )
-            {
-                return (T)Convert.ChangeType( val, TypeCode.Int32 );
-            }
-            if ( typeof( T ) == typeof( double ) )
-            {
-                return (T)Convert.ChangeType( val, TypeCode.Double );
             }
             return defaultValue;
         }
