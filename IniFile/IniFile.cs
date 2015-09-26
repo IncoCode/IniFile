@@ -1,6 +1,7 @@
 ﻿#region Using
 
 using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -56,7 +57,13 @@ namespace Ini
                 }
                 if ( typeof( T ) == typeof( double ) )
                 {
-                    return (T)Convert.ChangeType( val, TypeCode.Double );
+                    val = val.Replace( ",", "." );
+                    return (T)Convert.ChangeType( val, TypeCode.Double, CultureInfo.InvariantCulture );
+                }
+                if ( typeof( T ) == typeof( float ) )
+                {
+                    val = val.Replace( ",", "." );
+                    return (T)Convert.ChangeType( val, TypeCode.Single, CultureInfo.InvariantCulture );
                 }
             }
             catch
